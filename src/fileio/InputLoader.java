@@ -23,7 +23,6 @@ public final class InputLoader {
     }
 
     /**
-     *
      * @return the input data
      */
     public Input readData() {
@@ -31,10 +30,12 @@ public final class InputLoader {
         Integer numberofTurns = 0;
         List<Consumer> consumersData = new ArrayList<Consumer>();
         List<Distributor> distributorsData = new ArrayList<Distributor>();
+        List<Producer> producersData = new ArrayList<Producer>();
         List<MonthlyUpdate> monthlyUpdatesData = new ArrayList<MonthlyUpdate>();
 
         ConsumerFactory consumerFactory = ConsumerFactory.getInstance();
         DistributorFactory distributorFactory = DistributorFactory.getInstance();
+        ProducerFactory producerFactory = ProducerFactory.getInstance();
 
         try {
             JSONObject jsonObject = (JSONObject) jsonParser
@@ -60,13 +61,27 @@ public final class InputLoader {
                                 Integer.parseInt(String.valueOf(d.get("contractLength"))),
                                 Integer.parseInt(String.valueOf(d.get("initialBudget"))),
                                 Integer.parseInt(String.valueOf(d.get("initialInfrastructureCost"))),
-                                Integer.parseInt(String.valueOf(d.get("initialProductionCost")))));
+                                Integer.parseInt(String.valueOf(d.get("energyNeededKW"))),
+                                String.valueOf(d.get("producerStrategy"))));
+            }
+
+            JSONArray producers = (JSONArray) initialData.get("producers");
+            for (Object data : producers) {
+                JSONObject p = (JSONObject) data;
+                producersData.add(producerFactory.
+                        createProducer(Integer.parseInt(String.valueOf(p.get("id"))),
+                                String.valueOf(p.get("energyType")),
+                                Integer.parseInt(String.valueOf(p.get("maxDistributors"))),
+                                Float.parseFloat(String.valueOf(p.get("priceKW"))),
+                                Integer.parseInt(String.valueOf(p.get("energyPerDistributor")))));
             }
 
             JSONArray updates = (JSONArray) jsonObject.get("monthlyUpdates");
             for (Object data : updates) {
                 List<Consumer> newConsumers = new ArrayList<Consumer>();
                 List<CostChanges> costChanges = new ArrayList<CostChanges>();
+                List<DistributorChanges> distributorChanges = new ArrayList<DistributorChanges>();
+                List<ProducerChanges> producerChanges = new ArrayList<ProducerChanges>();
                 JSONArray newcons = (JSONArray) ((JSONObject) data).get("newConsumers");
                 for (Object newconsumers : newcons) {
                     JSONObject c = (JSONObject) newconsumers;
@@ -75,22 +90,28 @@ public final class InputLoader {
                                     Integer.parseInt(String.valueOf(c.get("initialBudget"))),
                                     Integer.parseInt(String.valueOf(c.get("monthlyIncome")))));
                 }
-                JSONArray cchanges = (JSONArray) ((JSONObject) data).get("costsChanges");
-                for (Object changes : cchanges) {
+                JSONArray distChanges = (JSONArray) ((JSONObject) data).get("distributorChanges");
+                for (Object changes : distChanges) {
                     JSONObject c = (JSONObject) changes;
-                    CostChanges change = new CostChanges(Integer.
+                    distributorChanges.add(new DistributorChanges(Integer.
                             parseInt(String.valueOf(c.get("id"))),
-                            Integer.parseInt(String.valueOf(c.get("infrastructureCost"))),
-                            Integer.parseInt(String.valueOf(c.get("productionCost"))));
-                    costChanges.add(change);
+                            Integer.parseInt(String.valueOf(c.get("infrastructureCost")))));
                 }
-                monthlyUpdatesData.add(new MonthlyUpdate(newConsumers, costChanges));
+                JSONArray prodChanges = (JSONArray) ((JSONObject) data).get("producerChanges");
+                for (Object changes : prodChanges) {
+                    JSONObject c = (JSONObject) changes;
+                    producerChanges.add(new ProducerChanges(Integer.
+                            parseInt(String.valueOf(c.get("id"))),
+                            Integer.parseInt(String.valueOf(c.get("energyPerDistributor")))));
+                }
+
+                monthlyUpdatesData.add(new MonthlyUpdate(newConsumers, distChanges, prodChanges));
             }
 
         } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
 
-        return new Input(numberofTurns, consumersData, distributorsData, monthlyUpdatesData);
+        return new Input(numberofTurns, consumersData, distributorsData, producersData, monthlyUpdatesData);
     }
 }

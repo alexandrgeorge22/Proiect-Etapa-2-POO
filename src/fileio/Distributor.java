@@ -1,5 +1,7 @@
 package fileio;
 
+import strategies.EnergyChoiceStrategyType;
+
 public final class Distributor {
     private Integer id;
     private Integer contractLength;
@@ -9,16 +11,34 @@ public final class Distributor {
     private Integer contractPrice;
     private Integer contractedConsumers = 0;
     private boolean isBankrupt = false;
+    private Integer energyNeededKW;
+    private EnergyChoiceStrategyType energyChoiceStrategyType;
 
     public Distributor(final Integer id, final Integer contractLength,
-                       final Integer budget,
-                       final Integer infrastructureCost,
-                       final Integer productionCost) {
+                       final Integer budget, final Integer infrastructureCost,
+                       final Integer energyNeededKW, final String producerStrategy) {
         this.id = id;
         this.contractLength = contractLength;
         this.budget = budget;
         this.infrastructureCost = infrastructureCost;
-        this.productionCost = productionCost;
+        this.energyNeededKW = energyNeededKW;
+        this.energyChoiceStrategyType = EnergyChoiceStrategyType.valueOf(producerStrategy);
+    }
+
+    @Override
+    public String toString() {
+        return "Distributor{" +
+                "id=" + id +
+                ", contractLength=" + contractLength +
+                ", budget=" + budget +
+                ", infrastructureCost=" + infrastructureCost +
+                ", productionCost=" + productionCost +
+                ", contractPrice=" + contractPrice +
+                ", contractedConsumers=" + contractedConsumers +
+                ", isBankrupt=" + isBankrupt +
+                ", energyNeededKW=" + energyNeededKW +
+                ", energyChoiceStrategyType='" + energyChoiceStrategyType + '\'' +
+                '}';
     }
 
     public boolean isBankrupt() {
@@ -97,5 +117,21 @@ public final class Distributor {
 
     public void setProductionCost(final Integer productionCost) {
         this.productionCost = productionCost;
+    }
+
+    public Integer getEnergyNeededKW() {
+        return energyNeededKW;
+    }
+
+    public void setEnergyNeededKW(Integer energyNeededKW) {
+        this.energyNeededKW = energyNeededKW;
+    }
+
+    public EnergyChoiceStrategyType getEnergyChoiceStrategyType() {
+        return energyChoiceStrategyType;
+    }
+
+    public void setEnergyChoiceStrategyType(EnergyChoiceStrategyType energyChoiceStrategyType) {
+        this.energyChoiceStrategyType = energyChoiceStrategyType;
     }
 }

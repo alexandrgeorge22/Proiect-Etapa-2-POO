@@ -1,9 +1,8 @@
-import fileio.FileWriter;
-import fileio.InputLoader;
-import fileio.Input;
-import fileio.Consumer;
-import fileio.Distributor;
-import fileio.CostChanges;
+import entities.EnergyType;
+import fileio.*;
+import strategies.GreenStrategy;
+import strategies.Strategy;
+import strategies.StrategyFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,9 +67,29 @@ public class Main {
         InputLoader inputLoader = new InputLoader(args[0]);
         Input input = inputLoader.readData();
 
-        initialround(input);
+        for(Consumer consumer:input.getConsumersData()){
+            System.out.println(consumer);
+        }
+        for(Distributor distributor:input.getDistributorsData()){
+            System.out.println(distributor);
+        }
+        for(Producer producer:input.getProducersData()){
 
-        // Rundele
+            System.out.println(producer.getEnergyType().getLabel() + " " + producer.getEnergyType().isRenewable());
+            System.out.println(producer);
+        }
+        for (MonthlyUpdate update:input.getMonthlyUpdatesData()){
+            System.out.println(update);
+        }
+
+        StrategyFactory strategyFactory = new StrategyFactory();
+        for(Distributor distributor:input.getDistributorsData()){
+            strategyFactory.createStrategy(distributor.getEnergyChoiceStrategyType()).applyStrategy(distributor, input.getProducersData());
+        }
+
+        //initialround(input);
+
+       /* // Rundele
         for (int i = 0; i < input.getNumberofTurns(); i++) {
             // Citire update-uri
             input.getConsumersData().addAll(input.getMonthlyUpdatesData().get(i).getNewConsumers());
@@ -239,5 +258,7 @@ public class Main {
 
         FileWriter writer = new FileWriter(args[1], input);
         writer.writefile();
+
+        */
     }
 }
