@@ -79,7 +79,6 @@ public final class InputLoader {
             JSONArray updates = (JSONArray) jsonObject.get("monthlyUpdates");
             for (Object data : updates) {
                 List<Consumer> newConsumers = new ArrayList<Consumer>();
-                List<CostChanges> costChanges = new ArrayList<CostChanges>();
                 List<DistributorChanges> distributorChanges = new ArrayList<DistributorChanges>();
                 List<ProducerChanges> producerChanges = new ArrayList<ProducerChanges>();
                 JSONArray newcons = (JSONArray) ((JSONObject) data).get("newConsumers");
@@ -105,7 +104,7 @@ public final class InputLoader {
                             Integer.parseInt(String.valueOf(c.get("energyPerDistributor")))));
                 }
 
-                monthlyUpdatesData.add(new MonthlyUpdate(newConsumers, distChanges, prodChanges));
+                monthlyUpdatesData.add(new MonthlyUpdate(newConsumers, distributorChanges, producerChanges));
             }
 
         } catch (ParseException | IOException e) {

@@ -1,5 +1,6 @@
 package fileio;
 
+
 public final class ProducerChanges {
     private Integer id;
     private Integer energyPerDistributor;

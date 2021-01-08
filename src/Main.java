@@ -1,7 +1,4 @@
-import entities.EnergyType;
 import fileio.*;
-import strategies.GreenStrategy;
-import strategies.Strategy;
 import strategies.StrategyFactory;
 
 import java.util.ArrayList;
@@ -13,11 +10,21 @@ public class Main {
      * @param input data to apply the initial round
      */
     public static void initialround(Input input) {
+        StrategyFactory strategyFactory = new StrategyFactory();
         // Runda initiala
         // Calculare pret contracte
+        // aplicare strategii + calculare cost productie
         for (Distributor distributor : input.getDistributorsData()) {
+            strategyFactory.createStrategy(distributor.getEnergyChoiceStrategyType()).
+                    applyStrategy(distributor, input.getProducersData());
+            distributor.setProductionCost();
             distributor.setContractPrice(0);
         }
+        // Runda initiala
+        // Calculare pret contracte
+//        for (Distributor distributor : input.getDistributorsData()) {
+//            distributor.setContractPrice(0);
+//        }
         List<Distributor> distributors = new ArrayList<>();
         distributors.addAll(input.getDistributorsData());
         Collections.sort(distributors,
@@ -67,37 +74,18 @@ public class Main {
         InputLoader inputLoader = new InputLoader(args[0]);
         Input input = inputLoader.readData();
 
-        for(Consumer consumer:input.getConsumersData()){
-            System.out.println(consumer);
-        }
-        for(Distributor distributor:input.getDistributorsData()){
-            System.out.println(distributor);
-        }
-        for(Producer producer:input.getProducersData()){
 
-            System.out.println(producer.getEnergyType().getLabel() + " " + producer.getEnergyType().isRenewable());
-            System.out.println(producer);
-        }
-        for (MonthlyUpdate update:input.getMonthlyUpdatesData()){
-            System.out.println(update);
-        }
+        initialround(input);
 
-        StrategyFactory strategyFactory = new StrategyFactory();
-        for(Distributor distributor:input.getDistributorsData()){
-            strategyFactory.createStrategy(distributor.getEnergyChoiceStrategyType()).applyStrategy(distributor, input.getProducersData());
-        }
 
-        //initialround(input);
-
-       /* // Rundele
+        // Rundele
         for (int i = 0; i < input.getNumberofTurns(); i++) {
+
             // Citire update-uri
             input.getConsumersData().addAll(input.getMonthlyUpdatesData().get(i).getNewConsumers());
-            for (CostChanges costChanges : input.getMonthlyUpdatesData().get(i).getCostChanges()) {
-                input.getDistributorsData().get(costChanges.getId()).
-                        setInfrastructureCost(costChanges.getInfrastructureCost());
-                input.getDistributorsData().get(costChanges.getId()).
-                        setProductionCost(costChanges.getProductionCost());
+            for (DistributorChanges distributorChange : input.getMonthlyUpdatesData().get(i).getDistributorChanges()) {
+                input.getDistributorsData().get(distributorChange.getId()).
+                        setInfrastructureCost(distributorChange.getInfrastructureCost());
             }
 
             // Calculare pret nou pentru contracte
@@ -254,11 +242,30 @@ public class Main {
                     }
                 }
             }
+            for (ProducerChanges producerChange : input.getMonthlyUpdatesData().get(i).getProducerChanges()) {
+                input.getProducersData().get(producerChange.getId()).
+                        setEnergyPerDistributor(producerChange.getEnergyPerDistributor());
+            }
+            StrategyFactory strategyFactory = new StrategyFactory();
+            for(Distributor distributor:input.getDistributorsData()){
+                if(!distributor.isBankrupt() && distributor.NeedUpdate()){
+                    strategyFactory.createStrategy(distributor.getEnergyChoiceStrategyType()).
+                            applyStrategy(distributor, input.getProducersData());
+                    distributor.setProductionCost();
+                    if(input.getNumberofTurns().compareTo(i) == 0){
+                        distributor.setContractPrice(distributor.getContractedConsumers());
+                    }
+
+                }
+            }
+            for(Producer producer:input.getProducersData()){
+                producer.updateMonthlyStats();
+            }
         }
 
         FileWriter writer = new FileWriter(args[1], input);
         writer.writefile();
 
-        */
+
     }
 }

@@ -13,9 +13,9 @@ import java.util.Collections;
 public final class FileWriter {
 
     private final Input output;
-    private String outFile;
-    private ObjectMapper mapper = new ObjectMapper();
-    private ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
+    private final String outFile;
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
 
 
     public FileWriter(final String outFile, final Input output) {
@@ -41,7 +41,10 @@ public final class FileWriter {
                     compareTo(o2.getActualContractLength())));
             JSONObject d = new JSONObject();
             d.put("id", distributor.getId());
+            d.put("energyNeededKW", distributor.getEnergyNeededKW());
+            d.put("contractCost", distributor.getContractPrice());
             d.put("budget", distributor.getBudget());
+            d.put("producerStrategy", distributor.getEnergyChoiceStrategyType().label);
             d.put("isBankrupt", distributor.isBankrupt());
             JSONArray cons = new JSONArray();
             for (Consumer consumer : output.getConsumersData()) {
@@ -58,6 +61,25 @@ public final class FileWriter {
             distributors.add(d);
         }
         out.put("distributors", distributors);
+        JSONArray producers = new JSONArray();
+        for(Producer producer:output.getProducersData()){
+            JSONObject p = new JSONObject();
+            p.put("id", producer.getId());
+            p.put("maxDistributors", producer.getMaxDistributors());
+            p.put("priceKW", producer.getPriceKW());
+            p.put("energyType", producer.getEnergyType().getLabel());
+            p.put("energyPerDistributor",producer.getEnergyPerDistributor());
+            JSONArray monthlyStats = new JSONArray();
+            for(int i = 0; i < producer.getMounthlyStats().size(); i++){
+                JSONObject month = new JSONObject();
+                month.put("month", i+1);
+                month.put("distributorsIds", producer.getMounthlyStats().get(i));
+                monthlyStats.add(month);
+            }
+            p.put("monthlyStats", monthlyStats);
+            producers.add(p);
+        }
+        out.put("energyProducers", producers);
         writer.writeValue(Paths.get(outFile).toFile(), out);
     }
 

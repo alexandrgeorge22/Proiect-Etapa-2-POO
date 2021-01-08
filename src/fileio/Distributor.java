@@ -2,7 +2,12 @@ package fileio;
 
 import strategies.EnergyChoiceStrategyType;
 
-public final class Distributor {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
+public final class Distributor implements Observer {
     private Integer id;
     private Integer contractLength;
     private Integer budget;
@@ -13,6 +18,16 @@ public final class Distributor {
     private boolean isBankrupt = false;
     private Integer energyNeededKW;
     private EnergyChoiceStrategyType energyChoiceStrategyType;
+    private List<Producer> contractedProducers = new ArrayList<Producer>();
+    private boolean needUpdate = false;
+
+    public boolean NeedUpdate() {
+        return needUpdate;
+    }
+
+    public void setNeedUpdate(boolean needUpdate) {
+        this.needUpdate = needUpdate;
+    }
 
     public Distributor(final Integer id, final Integer contractLength,
                        final Integer budget, final Integer infrastructureCost,
@@ -47,6 +62,7 @@ public final class Distributor {
 
     public void setBankrupt(final boolean bankrupt) {
         isBankrupt = bankrupt;
+
     }
 
     public Integer getContractedConsumers() {
@@ -77,6 +93,14 @@ public final class Distributor {
                     this.infrastructureCost / contractedConsumers) + this.productionCost + profit));
         }
 
+    }
+
+    public void setProductionCost() {
+        float cost = 0;
+        for (Producer producer : this.contractedProducers) {
+            cost += producer.getPriceKW() * producer.getEnergyPerDistributor();
+        }
+        this.productionCost = Math.toIntExact(Math.round(Math.floor(cost / 10)));
     }
 
     public Integer getBudget() {
@@ -115,8 +139,13 @@ public final class Distributor {
         return productionCost;
     }
 
-    public void setProductionCost(final Integer productionCost) {
-        this.productionCost = productionCost;
+    public List<Producer> getContractedProducers() {
+        return contractedProducers;
+    }
+
+    public void setContractedProducers(List<Producer> contractedProducers) {
+        this.contractedProducers = contractedProducers;
+
     }
 
     public Integer getEnergyNeededKW() {
@@ -133,5 +162,10 @@ public final class Distributor {
 
     public void setEnergyChoiceStrategyType(EnergyChoiceStrategyType energyChoiceStrategyType) {
         this.energyChoiceStrategyType = energyChoiceStrategyType;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        this.needUpdate = (boolean) arg;
     }
 }
