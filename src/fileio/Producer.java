@@ -2,12 +2,19 @@ package fileio;
 
 import entities.EnergyType;
 
-public final class Producer {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+
+public final class Producer extends Observable {
     private Integer id;
     private EnergyType energyType;
     private Integer maxDistributors;
     private Float priceKW;
     private Integer energyPerDistributor;
+    private List<Distributor> contractedDistributors = new ArrayList<Distributor>();
+    private ArrayList<ArrayList<Integer>> mounthlyStats = new ArrayList<>();
+
 
     public Producer(final Integer id, final String energyType,
                     final Integer maxDistributors, final Float priceKW,
@@ -54,6 +61,14 @@ public final class Producer {
         this.maxDistributors = maxDistributors;
     }
 
+    public List<Distributor> getContractedDistributors() {
+        return contractedDistributors;
+    }
+
+    public void setContractedDistributors(List<Distributor> contractedDistributors) {
+        this.contractedDistributors = contractedDistributors;
+    }
+
     public Float getPriceKW() {
         return priceKW;
     }
@@ -68,5 +83,25 @@ public final class Producer {
 
     public void setEnergyPerDistributor(Integer energyPerDistributor) {
         this.energyPerDistributor = energyPerDistributor;
+        notifyObservers();
+    }
+
+    public void notifyObservers() {
+        for (Distributor observer : this.contractedDistributors) {
+            observer.update(this, true);
+        }
+        this.contractedDistributors.clear();
+    }
+
+    public ArrayList<ArrayList<Integer>> getMounthlyStats() {
+        return mounthlyStats;
+    }
+
+    public void updateMonthlyStats(){
+        ArrayList<Integer> stats  = new ArrayList<Integer>();
+        for (Distributor distributor: this.contractedDistributors){
+            stats.add(distributor.getId());
+        }
+        this.mounthlyStats.add(stats);
     }
 }
