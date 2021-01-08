@@ -2,7 +2,7 @@ import fileio.*;
 import strategies.StrategyFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Main {
@@ -22,13 +22,9 @@ public class Main {
         }
         // Runda initiala
         // Calculare pret contracte
-//        for (Distributor distributor : input.getDistributorsData()) {
-//            distributor.setContractPrice(0);
-//        }
-        List<Distributor> distributors = new ArrayList<>();
-        distributors.addAll(input.getDistributorsData());
-        Collections.sort(distributors,
-                (o1, o2) -> (o1.getContractPrice().compareTo(o2.getContractPrice())));
+
+        List<Distributor> distributors = new ArrayList<>(input.getDistributorsData());
+        distributors.sort(Comparator.comparing(Distributor::getContractPrice));
         // Alegere contracte, primire salariu, plata rata
         for (Consumer consumer : input.getConsumersData()) {
             consumer.setBudget(consumer.getBudget() + consumer.getMonthlyIncome());
@@ -104,10 +100,8 @@ public class Main {
             }
 
             // Sortare crescatoare dupa pretul contractului
-            List<Distributor> updateddistributors = new ArrayList<>();
-            updateddistributors.addAll(input.getDistributorsData());
-            Collections.sort(updateddistributors,
-                    (o1, o2) -> (o1.getContractPrice().compareTo(o2.getContractPrice())));
+            List<Distributor> updateddistributors = new ArrayList<>(input.getDistributorsData());
+            updateddistributors.sort(Comparator.comparing(Distributor::getContractPrice));
 
             // Primire salariu consumatori, alegere contract, plata rata
             for (Consumer consumer : input.getConsumersData()) {
@@ -218,6 +212,12 @@ public class Main {
                         distributor.setBudget(distributor.getBudget() - distributor.
                                 getInfrastructureCost());
                         distributor.setBankrupt(true);
+                        for (Producer producer : input.getProducersData()) {
+                            if (distributor.getContractedProducers().contains(producer)) {
+                                producer.getContractedDistributors().remove(distributor);
+                            }
+                        }
+                        distributor.getContractedProducers().clear();
                         for (Consumer consumer : input.getConsumersData()) {
                             if (consumer.getDistributor() != null
                                     && consumer.getDistributor().equals(distributor.getId())) {
@@ -242,23 +242,24 @@ public class Main {
                     }
                 }
             }
+
             for (ProducerChanges producerChange : input.getMonthlyUpdatesData().get(i).getProducerChanges()) {
                 input.getProducersData().get(producerChange.getId()).
                         setEnergyPerDistributor(producerChange.getEnergyPerDistributor());
             }
             StrategyFactory strategyFactory = new StrategyFactory();
-            for(Distributor distributor:input.getDistributorsData()){
-                if(!distributor.isBankrupt() && distributor.NeedUpdate()){
+            for (Distributor distributor : input.getDistributorsData()) {
+                if (!distributor.isBankrupt() && distributor.NeedUpdate()) {
                     strategyFactory.createStrategy(distributor.getEnergyChoiceStrategyType()).
                             applyStrategy(distributor, input.getProducersData());
                     distributor.setProductionCost();
-                    if(input.getNumberofTurns().compareTo(i) == 0){
+                    if (input.getNumberofTurns().compareTo(i + 1) != 0) {
                         distributor.setContractPrice(distributor.getContractedConsumers());
                     }
 
                 }
             }
-            for(Producer producer:input.getProducersData()){
+            for (Producer producer : input.getProducersData()) {
                 producer.updateMonthlyStats();
             }
         }

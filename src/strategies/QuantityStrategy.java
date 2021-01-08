@@ -18,6 +18,11 @@ public class QuantityStrategy implements Strategy {
 
     @Override
     public void applyStrategy(Distributor distributor, List<Producer> producers) {
+        for(Producer producer:producers){
+            if(distributor.getContractedProducers().contains(producer)){
+                producer.getContractedDistributors().remove(distributor);
+            }
+        }
         distributor.getContractedProducers().clear();
         List<Producer> producersCopy = new ArrayList<Producer>(producers);
         producersCopy.sort(new QuantitySort());
