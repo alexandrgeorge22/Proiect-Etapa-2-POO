@@ -1,4 +1,11 @@
-import fileio.*;
+import fileio.Consumer;
+import fileio.Distributor;
+import fileio.Producer;
+import fileio.Input;
+import fileio.InputLoader;
+import fileio.DistributorChanges;
+import fileio.ProducerChanges;
+import fileio.FileWriter;
 import strategies.StrategyFactory;
 
 import java.util.ArrayList;
@@ -10,7 +17,7 @@ public class Main {
      * @param input data to apply the initial round
      */
     public static void initialround(Input input) {
-        StrategyFactory strategyFactory = new StrategyFactory();
+        StrategyFactory strategyFactory = StrategyFactory.getInstance();
         // Runda initiala
         // Calculare pret contracte
         // aplicare strategii + calculare cost productie
@@ -79,7 +86,8 @@ public class Main {
 
             // Citire update-uri
             input.getConsumersData().addAll(input.getMonthlyUpdatesData().get(i).getNewConsumers());
-            for (DistributorChanges distributorChange : input.getMonthlyUpdatesData().get(i).getDistributorChanges()) {
+            for (DistributorChanges distributorChange : input.getMonthlyUpdatesData().
+                    get(i).getDistributorChanges()) {
                 input.getDistributorsData().get(distributorChange.getId()).
                         setInfrastructureCost(distributorChange.getInfrastructureCost());
             }
@@ -213,9 +221,7 @@ public class Main {
                                 getInfrastructureCost());
                         distributor.setBankrupt(true);
                         for (Producer producer : input.getProducersData()) {
-                            if (distributor.getContractedProducers().contains(producer)) {
-                                producer.getContractedDistributors().remove(distributor);
-                            }
+                            producer.getContractedDistributors().remove(distributor);
                         }
                         distributor.getContractedProducers().clear();
                         for (Consumer consumer : input.getConsumersData()) {
@@ -242,14 +248,14 @@ public class Main {
                     }
                 }
             }
-
-            for (ProducerChanges producerChange : input.getMonthlyUpdatesData().get(i).getProducerChanges()) {
+            for (ProducerChanges producerChange : input.getMonthlyUpdatesData().
+                    get(i).getProducerChanges()) {
                 input.getProducersData().get(producerChange.getId()).
                         setEnergyPerDistributor(producerChange.getEnergyPerDistributor());
             }
-            StrategyFactory strategyFactory = new StrategyFactory();
+            StrategyFactory strategyFactory = StrategyFactory.getInstance();
             for (Distributor distributor : input.getDistributorsData()) {
-                if (!distributor.isBankrupt() && distributor.NeedUpdate()) {
+                if (!distributor.isBankrupt() && distributor.needUpdate()) {
                     strategyFactory.createStrategy(distributor.getEnergyChoiceStrategyType()).
                             applyStrategy(distributor, input.getProducersData());
                     distributor.setProductionCost();

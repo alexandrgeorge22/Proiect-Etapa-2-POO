@@ -104,13 +104,15 @@ public final class InputLoader {
                             Integer.parseInt(String.valueOf(c.get("energyPerDistributor")))));
                 }
 
-                monthlyUpdatesData.add(new MonthlyUpdate(newConsumers, distributorChanges, producerChanges));
+                monthlyUpdatesData.add(new MonthlyUpdate(newConsumers,
+                        distributorChanges, producerChanges));
             }
 
         } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
 
-        return new Input(numberofTurns, consumersData, distributorsData, producersData, monthlyUpdatesData);
+        return new Input(numberofTurns, consumersData, distributorsData,
+                producersData, monthlyUpdatesData);
     }
 }
