@@ -23,6 +23,9 @@ public final class FileWriter {
         this.outFile = outFile;
     }
 
+    /**
+     * Write the rounds result to output file in json format
+     */
     public void writefile() throws IOException {
 
         JSONObject out = new JSONObject();
@@ -44,7 +47,7 @@ public final class FileWriter {
             d.put("energyNeededKW", distributor.getEnergyNeededKW());
             d.put("contractCost", distributor.getContractPrice());
             d.put("budget", distributor.getBudget());
-            d.put("producerStrategy", distributor.getEnergyChoiceStrategyType().label);
+            d.put("producerStrategy", distributor.getEnergyChoiceStrategyType().getLabel());
             d.put("isBankrupt", distributor.isBankrupt());
             JSONArray cons = new JSONArray();
             for (Consumer consumer : output.getConsumersData()) {
@@ -62,17 +65,17 @@ public final class FileWriter {
         }
         out.put("distributors", distributors);
         JSONArray producers = new JSONArray();
-        for(Producer producer:output.getProducersData()){
+        for (Producer producer : output.getProducersData()) {
             JSONObject p = new JSONObject();
             p.put("id", producer.getId());
             p.put("maxDistributors", producer.getMaxDistributors());
             p.put("priceKW", producer.getPriceKW());
             p.put("energyType", producer.getEnergyType().getLabel());
-            p.put("energyPerDistributor",producer.getEnergyPerDistributor());
+            p.put("energyPerDistributor", producer.getEnergyPerDistributor());
             JSONArray monthlyStats = new JSONArray();
-            for(int i = 0; i < producer.getMounthlyStats().size(); i++){
+            for (int i = 0; i < producer.getMounthlyStats().size(); i++) {
                 JSONObject month = new JSONObject();
-                month.put("month", i+1);
+                month.put("month", i + 1);
                 month.put("distributorsIds", producer.getMounthlyStats().get(i));
                 monthlyStats.add(month);
             }

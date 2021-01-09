@@ -18,20 +18,6 @@ public final class Consumer {
         this.monthlyIncome = monthlyIncome;
     }
 
-    @Override
-    public String toString() {
-        return "Consumer{" +
-                "id=" + id +
-                ", budget=" + budget +
-                ", monthlyIncome=" + monthlyIncome +
-                ", penalty=" + penalty +
-                ", actualContractLength=" + actualContractLength +
-                ", distributor=" + distributor +
-                ", contractPrice=" + contractPrice +
-                ", isBankrupt=" + isBankrupt +
-                '}';
-    }
-
     public Integer getPenalty() {
         return penalty;
     }

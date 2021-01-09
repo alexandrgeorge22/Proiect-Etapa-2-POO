@@ -16,12 +16,21 @@ public final class DistributorFactory {
         return instance;
     }
 
-
+    /**
+     * @param id                 of new distributor
+     * @param contractLength     for new distributor
+     * @param budget             of new distributor
+     * @param infrastructureCost of new distributor
+     * @param energyNeededKW     of new distributor
+     * @param producerStrategy   of new distributor
+     * @return a new distributor
+     */
     public Distributor createDistributor(final Integer id, final Integer contractLength,
                                          final Integer budget, final Integer infrastructureCost,
-                                         final Integer energyNeededKW, final String producerStrategy) {
+                                         final Integer energyNeededKW,
+                                         final String producerStrategy) {
         return new Distributor(id, contractLength,
                 budget, infrastructureCost,
-                energyNeededKW,producerStrategy);
+                energyNeededKW, producerStrategy);
     }
 }

@@ -4,11 +4,10 @@ import fileio.Distributor;
 import fileio.Producer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class PriceStrategy implements Strategy {
+public final class PriceStrategy implements Strategy {
 
     static class PriceSort implements Comparator<Producer> {
         @Override
@@ -22,19 +21,16 @@ public class PriceStrategy implements Strategy {
 
     @Override
     public void applyStrategy(Distributor distributor, List<Producer> producers) {
-        for(Producer producer:producers){
-            if(distributor.getContractedProducers().contains(producer)){
-                producer.getContractedDistributors().remove(distributor);
-            }
+        for (Producer producer : producers) {
+            producer.getContractedDistributors().remove(distributor);
         }
         distributor.getContractedProducers().clear();
         List<Producer> producersCopy = new ArrayList<Producer>(producers);
         producersCopy.sort(new PriceSort());
         Integer energyNeededKw = distributor.getEnergyNeededKW();
-        while(energyNeededKw > 0){
-            if (producers.get(producers.indexOf(producersCopy.get(0))).
-                    getContractedDistributors().size() ==
-                    producers.get(producers.indexOf(producersCopy.get(0))).getMaxDistributors()){
+        while (energyNeededKw > 0) {
+            if (producersCopy.get(0).getContractedDistributors().size()
+                    == producersCopy.get(0).getMaxDistributors()) {
                 producersCopy.remove(0);
                 continue;
             }

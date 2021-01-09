@@ -26,17 +26,6 @@ public final class Producer extends Observable {
         this.energyPerDistributor = energyPerDistributor;
     }
 
-    @Override
-    public String toString() {
-        return "Producer{" +
-                "id=" + id +
-                ", energyType='" + energyType + '\'' +
-                ", maxDistributors=" + maxDistributors +
-                ", priceKW=" + priceKW +
-                ", energyPerDistributor=" + energyPerDistributor +
-                '}';
-    }
-
     public Integer getId() {
         return id;
     }
@@ -81,27 +70,38 @@ public final class Producer extends Observable {
         return energyPerDistributor;
     }
 
+    /**
+     * @param energyPerDistributor the new energy for each distributor
+     *                             notify all observers when the energy is updated
+     */
     public void setEnergyPerDistributor(Integer energyPerDistributor) {
         this.energyPerDistributor = energyPerDistributor;
         notifyObservers();
     }
 
+    /**
+     * Notify all observers when the energy is updated.
+     * In this case the observers are the contracted distributors
+     */
     public void notifyObservers() {
         for (Distributor observer : this.contractedDistributors) {
             observer.update(this, true);
         }
-        this.contractedDistributors.clear();
     }
 
     public ArrayList<ArrayList<Integer>> getMounthlyStats() {
         return mounthlyStats;
     }
 
-    public void updateMonthlyStats(){
-        ArrayList<Integer> stats  = new ArrayList<Integer>();
-        for (Distributor distributor: this.contractedDistributors){
+    /**
+     * Update the list of monthly stats
+     */
+    public void updateMonthlyStats() {
+        ArrayList<Integer> stats = new ArrayList<Integer>();
+        for (Distributor distributor : this.contractedDistributors) {
             stats.add(distributor.getId());
         }
+        stats.sort(Integer::compareTo);
         this.mounthlyStats.add(stats);
     }
 }

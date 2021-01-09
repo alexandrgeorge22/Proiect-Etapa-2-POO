@@ -21,7 +21,10 @@ public final class Distributor implements Observer {
     private List<Producer> contractedProducers = new ArrayList<Producer>();
     private boolean needUpdate = false;
 
-    public boolean NeedUpdate() {
+    /**
+     * @return if the distributor need to update the contracted producers
+     */
+    public boolean needUpdate() {
         return needUpdate;
     }
 
@@ -38,22 +41,6 @@ public final class Distributor implements Observer {
         this.infrastructureCost = infrastructureCost;
         this.energyNeededKW = energyNeededKW;
         this.energyChoiceStrategyType = EnergyChoiceStrategyType.valueOf(producerStrategy);
-    }
-
-    @Override
-    public String toString() {
-        return "Distributor{" +
-                "id=" + id +
-                ", contractLength=" + contractLength +
-                ", budget=" + budget +
-                ", infrastructureCost=" + infrastructureCost +
-                ", productionCost=" + productionCost +
-                ", contractPrice=" + contractPrice +
-                ", contractedConsumers=" + contractedConsumers +
-                ", isBankrupt=" + isBankrupt +
-                ", energyNeededKW=" + energyNeededKW +
-                ", energyChoiceStrategyType='" + energyChoiceStrategyType + '\'' +
-                '}';
     }
 
     public boolean isBankrupt() {
@@ -95,6 +82,9 @@ public final class Distributor implements Observer {
 
     }
 
+    /**
+     * calculate the production cost
+     */
     public void setProductionCost() {
         float cost = 0;
         for (Producer producer : this.contractedProducers) {
