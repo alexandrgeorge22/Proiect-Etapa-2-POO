@@ -9,9 +9,9 @@ Clasa Distributor:
 	- are urmatoarele metode: setContractPrice ce calculeaza pretul
 contractului fiecarui distribuitor sau il seteaza la (INF/999999999) in cazul 
 in care distribuitorul a dat faliment
-							  setProductionCost ce calculeaza costul de 
+				  setProductionCost ce calculeaza costul de 
 productie si il seteaza
-							  payCosts ce calculeaza costul total de platit
+				  payCosts ce calculeaza costul total de platit
 la finalul lunii. Daca distribuitorul devine bankrupt acesta o sa fie scos
 din listele producatorilor si din lista consumatorului abonat la acesta
 
@@ -28,7 +28,7 @@ Clasa Consumer:
 	- are urmatoarele metode: checkContract ce verifica daca acesta are in
 prezent un contract activ. In cazul in care acesta devine liber de contract,
 isi plateste datoriile daca are si cauta un distribuitor nou
-							  payContract ce plateste contractul actual. In
+				  payContract ce plateste contractul actual. In
 cazul in care acesta nu poate sa isi plateasca contractul, fie o sa aiba 
 restanta, fie o sa devine bankrupt
 
@@ -52,7 +52,8 @@ Clasa Main are 2 metode:
 runda si la final se scrie rezultatul
 	- metoda initialround ce simuleaza runda initiala(am preferat folosirea 
 acestei metode pentru ca initial pretul contractelor se genereaza pentru
-fiecare distribuitor la fel urmand ca mai apoi sa se calculeze in functie de numarul de clienti al fiecarui distribuitor).
+fiecare distribuitor la fel urmand ca mai apoi sa se calculeze in functie de
+numarul de clienti al fiecarui distribuitor).
 
 
 ### Flow
