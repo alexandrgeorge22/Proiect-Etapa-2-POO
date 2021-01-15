@@ -4,10 +4,15 @@ Starting audit...
 [ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/fileio/Distributor.java:71:24: '999999999' is a magic number. [MagicNumber]
 [ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/fileio/Distributor.java:78:68: '0.2' is a magic number. [MagicNumber]
 [ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/fileio/Distributor.java:93:76: '10' is a magic number. [MagicNumber]
+[ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/fileio/Distributor.java:162:5: Missing a Javadoc comment. [MissingJavadocMethod]
+[ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/fileio/Consumer.java:59:5: Missing a Javadoc comment. [MissingJavadocMethod]
+[ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/fileio/Consumer.java:94:5: Missing a Javadoc comment. [MissingJavadocMethod]
+[ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/fileio/Consumer.java:98:25: 'penalty' hides a field. [HiddenField]
+[ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/fileio/Consumer.java:98:73: '1.2' is a magic number. [MagicNumber]
+[ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/fileio/Consumer.java:134:5: Missing a Javadoc comment. [MissingJavadocMethod]
+[ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/fileio/Consumer.java:137:25: 'penalty' hides a field. [HiddenField]
+[ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/fileio/Consumer.java:138:31: '1.2' is a magic number. [MagicNumber]
 [ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/Main.java:15:1: Utility classes should not have a public or default constructor. [HideUtilityClassConstructor]
-[ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/Main.java:76:5: Method length is 202 lines (max allowed is 150). [MethodLength]
-[ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/Main.java:76:5: Missing a Javadoc comment. [MissingJavadocMethod]
-[ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/Main.java:127:85: '1.2' is a magic number. [MagicNumber]
-[ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/Main.java:179:47: '1.2' is a magic number. [MagicNumber]
+[ERROR] /home/george/Desktop/POO/Proiect-etapa2/Proiect-Etapa-2-POO/./src/Main.java:75:5: Missing a Javadoc comment. [MissingJavadocMethod]
 Audit done.
-Checkstyle ends with 10 errors.
+Checkstyle ends with 15 errors.
