@@ -158,4 +158,39 @@ public final class Distributor implements Observer {
     public void update(Observable o, Object arg) {
         this.needUpdate = (boolean) arg;
     }
+
+    public void payCosts(List<Consumer> consumersData, List<Producer> producersData) {
+        int totalcost = this.getInfrastructureCost() + this.
+                getProductionCost() * this.getContractedConsumers();
+        if (this.getBudget() < totalcost) {
+            this.setBudget(this.getBudget() - this.
+                    getInfrastructureCost());
+            this.setBankrupt(true);
+            for (Producer producer : producersData) {
+                producer.getContractedDistributors().remove(this);
+            }
+            this.getContractedProducers().clear();
+            for (Consumer consumer : consumersData) {
+                if (consumer.getDistributor() != null
+                        && consumer.getDistributor().equals(this.getId())) {
+                    consumer.setDistributor(null);
+                    consumer.setPenalty(null);
+                    consumer.setContractPrice(null);
+                    consumer.setActualContractLength(null);
+                }
+            }
+        } else {
+            this.setBudget(this.getBudget() - totalcost);
+        }
+        for (Consumer consumer : consumersData) {
+            if (consumer.isBankrupt()) {
+                if (consumer.getDistributor() != null
+                        && consumer.getDistributor().equals(this.getId())) {
+                    this.setContractedConsumers(this.
+                            getContractedConsumers() - 1);
+                    consumer.setDistributor(null);
+                }
+            }
+        }
+    }
 }
